@@ -32,11 +32,21 @@ class MinecraftServer
     end
 
     def run_sever_command(filename)
-        @pid = Process.spawn("java", "-Xmx1024M", "-Xms1024M", "-jar", "#{filename}", "nogui")
-        puts "PID = #{pid}"
+        @pid = fork do
+          # this code is run in the child process
+          # you can do anything here, like changing current directory or reopening STDOUT
+          exec "java -Xmx1024M -Xms1024M -jar #{filename} nogui"
+        end
+
+        print_pid
+
         @running = true
     end
 
+    def print_pid
+        puts "PID: #{pid}"
+    end
+    
     def stop
         if running
             Process.kill(9, pid)
@@ -64,10 +74,10 @@ class MinecraftServerController < ApplicationController
         server = MinecraftServer.new
         server.start_world(test_world)
 
-        puts "The server will be up for 5 seconds"
-        sleep(5)
-        puts "Im going to stop in 5 seconds"
-        sleep(5)
-        server.stop
+        # puts "The server will be up for 5 seconds"
+        # sleep(5)
+        # puts "Im going to stop in 5 seconds"
+        # sleep(5)
+        # server.stop
     end
 end
