@@ -49,16 +49,16 @@ class MinecraftServer
     end
 end
 
-test_world = MinecraftWorld.new(
-    name: "test world",
-    directory: "/Users/chrisrice/MinecraftWorlds/testworld",
-    version: "1.8.8")
-
-server = MinecraftServer.new
-server.start_world(test_world)
-
-puts "The server will be up for 5 seconds"
-sleep(5)
-puts "Im going to stop in 5 seconds"
-sleep(5)
-server.stop
+# test_world = MinecraftWorld.new(
+#     name: "test world",
+#     directory: "/Users/chrisrice/MinecraftWorlds/testworld",
+#     version: "1.8.8")
+#
+# server = MinecraftServer.new
+# server.start_world(test_world)
+#
+# puts "The server will be up for 5 seconds"
+# sleep(5)
+# puts "Im going to stop in 5 seconds"
+# sleep(5)
+# server.stop

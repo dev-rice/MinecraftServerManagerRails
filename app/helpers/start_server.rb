@@ -49,25 +49,16 @@ class MinecraftServer
     end
 end
 
-class MinecraftServerController < ApplicationController
-    def index
-        puts "Hello, world!"
-        start_server
-    end
+test_world = MinecraftWorld.new(
+    name: "test world",
+    directory: "/Users/chrisrice/MinecraftWorlds/testworld",
+    version: "1.8.8")
 
-    def start_server
-        test_world = MinecraftWorld.new(
-            name: "test world",
-            directory: "/Users/chrisrice/MinecraftWorlds/testworld",
-            version: "1.8.8")
+server = MinecraftServer.new
+server.start_world(test_world)
 
-        server = MinecraftServer.new
-        server.start_world(test_world)
-
-        puts "The server will be up for 5 seconds"
-        sleep(5)
-        puts "Im going to stop in 5 seconds"
-        sleep(5)
-        server.stop
-    end
-end
+puts "The server will be up for 5 seconds"
+sleep(5)
+puts "Im going to stop in 5 seconds"
+sleep(5)
+server.stop
