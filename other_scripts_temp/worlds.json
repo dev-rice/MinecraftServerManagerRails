@@ -1,0 +1,13 @@
+{
+    "worlds": [
+        {"name": "Apartment World",
+         "directory": "/home/minecrafter/Apartment_World",
+         "version": "1.8"},
+        {"name": "First World",
+         "directory": "/home/minecrafter/FirstWorld",
+         "version": "1.8"},
+        {"name": "Hardcore Island",
+         "directory": "/home/minecrafter/HardcoreIsland",
+         "version": "1.8.8"}
+    ]
+}
