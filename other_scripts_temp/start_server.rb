@@ -21,22 +21,14 @@ end
 class MinecraftServer
     attr_reader :pid, :running, :pid_filepath
 
-    def initialize()
-        # Should just be the directory that this script is in
-        @pid_filepath = "/Users/chrisrice/Code/MinecraftServerManager/current.pid"
-    end
-
     def start_world(world)
         world.start(self)
     end
 
     def start(version)
-        remove_pid_file
-
         filename = get_server_filename(version)
         run_sever_command(filename)
 
-        write_pid_file
     end
 
     def run_sever_command(filename)
@@ -45,22 +37,9 @@ class MinecraftServer
         @running = true
     end
 
-    def write_pid_file
-        File.open(pid_filepath, "w") {|f|
-            f.write(pid)
-        }
-    end
-
-    def remove_pid_file
-         if (File.exist?(pid_filepath))
-             File.delete(pid_filepath)
-         end
-     end
-
     def stop
         if running
             Process.kill(9, pid)
-            remove_pid_file
         end
         @running = false
     end
@@ -78,8 +57,8 @@ test_world = MinecraftWorld.new(
 server = MinecraftServer.new
 server.start_world(test_world)
 
-puts "The server will be up for 65 seconds"
-sleep(60)
+puts "The server will be up for 5 seconds"
+sleep(5)
 puts "Im going to stop in 5 seconds"
 sleep(5)
 server.stop
