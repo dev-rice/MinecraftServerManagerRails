@@ -156,6 +156,10 @@ class MinecraftServerController < ApplicationController
         @conn = PG::Connection.open(:dbname => 'MinecraftServerManagerRails_development')
     end
 
+    def disconnect_db_connection
+        @conn.close()
+    end
+
     def start_server
         render nothing: true
 
@@ -164,15 +168,19 @@ class MinecraftServerController < ApplicationController
             directory: "/Users/chrisrice/MinecraftWorlds/testworld",
             version: "1.8.8")
         server.start_world(test_world)
+        disconnect_db_connection
     end
 
     def stop_server
         render nothing: true
 
         server.stop
+        disconnect_db_connection
     end
 
     def get_status
         render text: "#{server.running}"
+        disconnect_db_connection
     end
+
 end
