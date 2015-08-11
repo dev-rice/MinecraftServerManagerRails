@@ -70,8 +70,7 @@ class ServerTable
 
     def table_exists?(table_name)
         result = dbconn.exec("SELECT count(*) FROM information_schema.tables WHERE table_name = \'#{table_name}\';")
-        count = result[0]["count"]
-
+        count = result[0]["count"].to_i
         count != 0
     end
 
@@ -163,9 +162,13 @@ class MinecraftServerController < ApplicationController
     def start_server
         render nothing: true
 
+        # test_world = MinecraftWorld.new(
+        #     name: "test world",
+        #     directory: "/Users/chrisrice/MinecraftWorlds/testworld",
+        #     version: "1.8.8")
         test_world = MinecraftWorld.new(
-            name: "test world",
-            directory: "/Users/chrisrice/MinecraftWorlds/testworld",
+            name: "Hardcore Island",
+            directory: "/home/minecrafter/HardcoreIsland",
             version: "1.8.8")
         server.start_world(test_world)
         disconnect_db_connection
