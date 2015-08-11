@@ -1,1 +1,24 @@
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 <h1>Minecraft!</h1>
+<button id="start_btn" type="button" class="btn btn-success">Start Server</button>
+<button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
+<%= javascript_tag do %>
+    $('#start_btn').on('click', function() {
+        console.log("You clicked the start button!");
+        $.get('/ajax/start_server');
+        return false;
+    });
+    $('#stop_btn').on('click', function() {
+        console.log("You clicked the stop button!");
+        $.get('/ajax/stop_server');
+        return false;
+    });
+<% end %>
