@@ -158,7 +158,6 @@ class MinecraftServerController < ApplicationController
 
     def initialize_db_connection
         @conn = PG::Connection.open(:dbname => 'MinecraftServerManagerRails_development')
-        puts @conn.error_message
     end
 
     def start_server
@@ -175,5 +174,9 @@ class MinecraftServerController < ApplicationController
         render nothing: true
 
         server.stop
+    end
+
+    def get_status
+        render text: "#{server.running}"
     end
 end

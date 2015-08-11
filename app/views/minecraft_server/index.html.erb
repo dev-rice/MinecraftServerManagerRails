@@ -10,6 +10,7 @@
 <h1>Minecraft!</h1>
 <button id="start_btn" type="button" class="btn btn-success">Start Server</button>
 <button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
+<p id="status_text"></p>
 <%= javascript_tag do %>
     $('#start_btn').on('click', function() {
         console.log("You clicked the start button!");
@@ -21,4 +22,16 @@
         $.get('/ajax/stop_server');
         return false;
     });
+    function update_status() {
+        $.ajax({
+            type: 'get',
+            url: 'ajax/get_status',
+            success: function(response) {
+                $('#status_text').html(response);
+            }
+        });
+        return false;
+    }
+    update_status();
+    setInterval(update_status, 1000);
 <% end %>
