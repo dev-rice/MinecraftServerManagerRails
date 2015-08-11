@@ -15,11 +15,13 @@
     $('#start_btn').on('click', function() {
         console.log("You clicked the start button!");
         $.get('/ajax/start_server');
+        update_status();
         return false;
     });
     $('#stop_btn').on('click', function() {
         console.log("You clicked the stop button!");
         $.get('/ajax/stop_server');
+        update_status();
         return false;
     });
     function update_status() {
@@ -33,5 +35,5 @@
         return false;
     }
     update_status();
-    setInterval(update_status, 1000);
+    <!-- setInterval(update_status, 1000); -->
 <% end %>
