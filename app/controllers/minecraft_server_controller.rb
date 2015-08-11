@@ -41,6 +41,10 @@ class ServerTable
         get_number_of_rows_in_table(table_id)
     end
 
+    def is_active?
+        num_rows > 0
+    end
+
     def this_table_exists?
         table_exists?(table_id)
     end
@@ -80,12 +84,11 @@ class MinecraftServer
         @server_table = server_table
         @running = false
 
-        restore_if_running
+        restore_if_active
     end
 
-    def restore_if_running
-        num_rows = server_table.num_rows
-        if (num_rows != 0)
+    def restore_if_active
+        if server_table.is_active?
             restore
         end
     end
@@ -100,10 +103,14 @@ class MinecraftServer
 
     def start(version)
         if !running
-            filename = get_server_filename(version)
-            run_sever_command(filename)
+            run_server(version)
             server_table.create_entry(pid)
         end
+    end
+
+    def run_server(version)
+        filename = get_server_filename(version)
+        run_sever_command(filename)
     end
 
     def run_sever_command(filename)
@@ -139,9 +146,7 @@ class MinecraftServer
     end
 end
 
-
 require 'pg'
-
 class MinecraftServerController < ApplicationController
     attr_reader :server, :conn, :server_table
 
@@ -157,22 +162,18 @@ class MinecraftServerController < ApplicationController
     end
 
     def start_server
+        render nothing: true
+
         test_world = MinecraftWorld.new(
             name: "test world",
             directory: "/Users/chrisrice/MinecraftWorlds/testworld",
             version: "1.8.8")
-        if server
-            server.start_world(test_world)
-        else
-            puts "server does not exist"
-        end
+        server.start_world(test_world)
     end
 
     def stop_server
-        if server
-            server.stop
-        else
-            puts "server does not exist"
-        end
+        render nothing: true
+
+        server.stop
     end
 end
