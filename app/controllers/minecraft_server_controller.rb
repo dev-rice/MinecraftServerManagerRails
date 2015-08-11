@@ -130,10 +130,6 @@ class MinecraftServer
         @running = false
     end
 
-    def print_pid
-        puts "PID: #{pid}"
-    end
-
     def stop
         if running
             server_table.delete_entry
