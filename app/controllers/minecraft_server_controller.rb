@@ -18,6 +18,48 @@ class MinecraftWorld
 
 end
 
+class WorldsTable
+    attr_reader :dbconn, :table_id
+
+    def initialize(dbconn, table_id)
+        @dbconn = dbconn
+        @table_id = table_id
+
+        create_if_not_exist
+    end
+
+    def create_if_not_exist
+        if !this_table_exists?
+            create
+        end
+    end
+
+    def create
+        dbconn.exec("CREATE TABLE #{table_id}(name text, path text, version text);")
+    end
+
+    def get_worlds()
+        result = dbconn.exec("SELECT * FROM #{table_id};")
+        worlds = {}
+        result.each {|world_hash|
+            world_hash_new = {name: world_hash["name"], directory: world_hash["path"], version: world_hash["version"]}
+            worlds[world_hash["name"]] = MinecraftWorld.new(world_hash_new)
+        }
+
+        worlds
+    end
+
+    def this_table_exists?
+        table_exists?(table_id)
+    end
+
+    def table_exists?(table_name)
+        result = dbconn.exec("SELECT count(*) FROM information_schema.tables WHERE table_name = \'#{table_name}\';")
+        count = result[0]["count"].to_i
+        count != 0
+    end
+end
+
 class ServerTable
     attr_reader :dbconn, :table_id
 
@@ -25,6 +67,10 @@ class ServerTable
         @dbconn = dbconn
         @table_id = table_id
 
+        create_if_not_exist
+    end
+
+    def create_if_not_exist
         if !this_table_exists?
             create
         end
@@ -114,9 +160,13 @@ class MinecraftServer
 
     def run_sever_command(filename)
         pid_temp = fork do
-          exec "java -Xmx1024M -Xms1024M -jar #{filename} nogui"
+          exec java_command(filename)
         end
         set_pid(pid_temp)
+    end
+
+    def java_command(filename)
+        "java -Xmx1024M -Xms1024M -jar #{filename} nogui"
     end
 
     def set_pid(pid_temp)
@@ -143,35 +193,43 @@ end
 
 require 'pg'
 class MinecraftServerController < ApplicationController
-    attr_reader :server, :conn, :server_table
+    attr_reader :server, :conn, :server_table, :worlds_table
 
     def initialize
         initialize_db_connection
         @server_table = ServerTable.new(conn, 'server')
+        @worlds_table = WorldsTable.new(conn, 'worlds')
         @server = MinecraftServer.new(server_table)
     end
 
     def initialize_db_connection
-        @conn = PG::Connection.open(:dbname => 'MinecraftServerManagerRails_development')
+        @conn = PG::Connection.open(:dbname => dbname)
+    end
+
+    def dbname
+        'MinecraftServerManagerRails_development'
     end
 
     def disconnect_db_connection
         @conn.close()
     end
 
-    def start_server
+    def start_server()
         render nothing: true
 
-        # test_world = MinecraftWorld.new(
-        #     name: "test world",
-        #     directory: "/Users/chrisrice/MinecraftWorlds/testworld",
-        #     version: "1.8.8")
-        test_world = MinecraftWorld.new(
-            name: "Hardcore Island",
-            directory: "/home/minecrafter/HardcoreIsland",
-            version: "1.8.8")
-        server.start_world(test_world)
+        successful = true
+        world_name = params[:world_name]
+        worlds = worlds_table.get_worlds()
+        world = worlds[world_name]
+        if (world)
+            server.start_world(world)
+        else
+            successful = false
+        end
+
         disconnect_db_connection
+
+        return successful
     end
 
     def stop_server
@@ -183,6 +241,12 @@ class MinecraftServerController < ApplicationController
 
     def get_status
         render text: "#{server.running}"
+        disconnect_db_connection
+    end
+
+    def get_worlds
+        worlds = worlds_table.get_worlds()
+        render text: "#{worlds.keys}"
         disconnect_db_connection
     end
 

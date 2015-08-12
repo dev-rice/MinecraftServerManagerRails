@@ -7,21 +7,35 @@
 <!-- Latest compiled JavaScript -->
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-<h1>Minecraft!</h1>
-<button id="start_btn" type="button" class="btn btn-success">Start Server</button>
-<button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
-<p id="status_text"></p>
+<div id="content_wrappper">
+    <h1>Minecraft!</h1>
+    <div class="form-group">
+      <label for="usr">World:</label>
+      <input type="text" class="form-control" id="world_input">
+    </div>
+    <button id="start_btn" type="button" class="btn btn-success">Start Server</button>
+    <button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
+    <p id="status_text"></p>
+    <p id="worlds_text"></p>
+</div>
 <%= javascript_tag do %>
     $('#start_btn').on('click', function() {
         console.log("You clicked the start button!");
-        $.get('/ajax/start_server');
-        update_status();
+        world_name = $('#world_input').val();
+        console.log("Looks like you want to start the world: " + world_name);
+        $.ajax({
+            type: 'get',
+            url: 'ajax/start_server',
+            data: {world_name:world_name},
+        });
         return false;
     });
     $('#stop_btn').on('click', function() {
         console.log("You clicked the stop button!");
-        $.get('/ajax/stop_server');
-        update_status();
+        $.ajax({
+            type: 'get',
+            url: 'ajax/stop_server'
+        });
         return false;
     });
     function update_status() {
@@ -29,11 +43,22 @@
             type: 'get',
             url: 'ajax/get_status',
             success: function(response) {
-                $('#status_text').html(response);
+                $('#status_text').html("Running: " + response);
             }
         });
         return false;
     }
+    function update_worlds() {
+        $.ajax({
+            type: 'get',
+            url: 'ajax/get_worlds',
+            success: function(response) {
+                $('#worlds_text').html("Worlds: " + response);
+            }
+        });
+        return false;
+    }
+    update_worlds();
     update_status();
     setInterval(update_status, 1000);
 <% end %>
