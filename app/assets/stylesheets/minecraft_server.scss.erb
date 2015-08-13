@@ -13,18 +13,37 @@ body {
 h1 {
     margin-top: 0px;
 }
+
+$controller_padding: 20px;
+$controller_border_radius: 5px;
 #controller_wrapper {
     display: block;
     margin: auto;
     border-top: 100px;
     // background: rgb(219, 219, 219) url(<%= asset_path 'stone.png' %>);
     background: rgb(219, 219, 219);
-    padding: 20px;
-    width: 40%;
-    height: 500px;
+    padding: $controller_padding;
+    border-radius: $controller_border_radius;
+    width: 500px;
+    height: 300px;
     position: relative;
     top: 100px;
 }
+
+#controller_title_div {
+    background-color: rgb(181, 181, 181);
+    margin: -$controller_padding;
+    margin-bottom: 0px;
+
+    padding: 20px;
+    padding-top: 15px;
+    padding-bottom: 0px;
+
+    border-top-left-radius: $controller_border_radius;
+    border-top-right-radius: $controller_border_radius;
+    border-bottom: solid 1px rgb(177, 177, 177);
+}
+
 
 #pseudo_form_div {
     display: block;
@@ -36,4 +55,6 @@ h1 {
 .controller_view {
     width: 200px;
     display: none;
+    padding-top: 20px;
+    // margin: auto;
 }
