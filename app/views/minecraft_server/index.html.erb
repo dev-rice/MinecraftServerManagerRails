@@ -9,56 +9,13 @@
 
 <div id="content_wrappper">
     <h1>Minecraft!</h1>
-    <div class="form-group">
-      <label for="usr">World:</label>
-      <input type="text" class="form-control" id="world_input">
+    <div id="world_select_form_div" class="form-group">
+        <label for="sel1">Select list:</label>
+        <%= select_tag(:world_select, options_for_select(@worlds_table.get_worlds), { :class => 'form-control' } )%>
     </div>
+
     <button id="start_btn" type="button" class="btn btn-success">Start Server</button>
     <button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
     <p id="status_text"></p>
-    <p id="worlds_text"></p>
 </div>
-<%= javascript_tag do %>
-    $('#start_btn').on('click', function() {
-        console.log("You clicked the start button!");
-        world_name = $('#world_input').val();
-        console.log("Looks like you want to start the world: " + world_name);
-        $.ajax({
-            type: 'get',
-            url: 'ajax/start_server',
-            data: {world_name:world_name},
-        });
-        return false;
-    });
-    $('#stop_btn').on('click', function() {
-        console.log("You clicked the stop button!");
-        $.ajax({
-            type: 'get',
-            url: 'ajax/stop_server'
-        });
-        return false;
-    });
-    function update_status() {
-        $.ajax({
-            type: 'get',
-            url: 'ajax/get_status',
-            success: function(response) {
-                $('#status_text').html("Running: " + response);
-            }
-        });
-        return false;
-    }
-    function update_worlds() {
-        $.ajax({
-            type: 'get',
-            url: 'ajax/get_worlds',
-            success: function(response) {
-                $('#worlds_text').html("Worlds: " + response);
-            }
-        });
-        return false;
-    }
-    update_worlds();
-    update_status();
-    setInterval(update_status, 1000);
-<% end %>
+<%=javascript_include_tag "minecraft_server_ajax_stuff.js"%>
