@@ -10,13 +10,20 @@ body {
     height: 100%;
     width: 100%;
 }
+h1 {
+    margin-top: 0px;
+}
 #controller_wrapper {
     display: block;
     margin: auto;
-    background-color: rgb(219, 219, 219);
+    border-top: 100px;
+    // background: rgb(219, 219, 219) url(<%= asset_path 'stone.png' %>);
+    background: rgb(219, 219, 219);
     padding: 20px;
     width: 40%;
     height: 500px;
+    position: relative;
+    top: 100px;
 }
 
 #pseudo_form_div {
@@ -24,4 +31,9 @@ body {
     margin: auto;
     width: 300px;
 
+}
+
+.controller_view {
+    width: 200px;
+    display: none;
 }

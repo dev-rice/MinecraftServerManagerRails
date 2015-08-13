@@ -49,6 +49,10 @@ class WorldsTable
         worlds
     end
 
+    def get_world(name)
+        world = get_worlds[name]
+    end
+
     def this_table_exists?
         table_exists?(table_id)
     end

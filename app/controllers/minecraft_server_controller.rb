@@ -24,20 +24,14 @@ class MinecraftServerController < ApplicationController
     def start_server()
         render nothing: true
 
-        successful = true
         world_name = params[:world_name]
-        worlds = worlds_table.get_worlds()
-        world = worlds[world_name]
+        world = worlds_table.get_world(world_name)
 
-        if (world)
+        if world
             server.start_world(world)
-        else
-            successful = false
         end
 
         disconnect_db_connection
-
-        return successful
     end
 
     def stop_server

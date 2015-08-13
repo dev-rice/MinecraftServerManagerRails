@@ -10,19 +10,21 @@
     <!-- Latest compiled JavaScript -->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <%=stylesheet_link_tag "minecraft_server"%>
-
+    <title>Yakkio Minecraft Server</title>
 </head>
 <body>
     <div id="content_wrapper">
         <div id="controller_wrapper">
-            <h1>Minecraft!</h1>
-            <div id="pseudo_form_div">
+            <h1>Yakkio Minecraft Server</h1>
+            <div id="start_view" class="controller_view">
                 <div id="world_select_form_div" class="form-group">
                     <label for="sel1">Select World:</label>
                     <%= select_tag(:world_select, options_for_select(@worlds_table.get_worlds), { :class => 'form-control' } )%>
                 </div>
 
                 <button id="start_btn" type="button" class="btn btn-success">Start Server</button>
+            </div>
+            <div id="stop_view" class="controller_view">
                 <button id="stop_btn" type="button" class="btn btn-danger">Stop Server</button>
             </div>
             <p id="status_text"></p>
