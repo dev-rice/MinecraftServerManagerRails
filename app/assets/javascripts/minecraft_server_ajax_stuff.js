@@ -1,7 +1,5 @@
 $('#start_btn').on('click', function() {
-    console.log("You clicked the start button!");
-    world_name = $("#world_select").children("option").filter(":selected").text()
-    console.log("Looks like you want to start the world: " + world_name);
+    world_name = get_selected_world();
     $.ajax({
         type: 'get',
         url: 'ajax/start_server',
@@ -10,13 +8,16 @@ $('#start_btn').on('click', function() {
     return false;
 });
 $('#stop_btn').on('click', function() {
-    console.log("You clicked the stop button!");
     $.ajax({
         type: 'get',
         url: 'ajax/stop_server'
     });
     return false;
 });
+
+function get_selected_world() {
+    return $("#world_select").children("option").filter(":selected").text()
+}
 function update_status() {
     $.ajax({
         type: 'get',
