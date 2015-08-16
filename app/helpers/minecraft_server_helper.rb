@@ -170,7 +170,19 @@ class MinecraftServer
     end
 
     def java_command(filename)
-        "java -Xmx1024M -Xms1024M -jar #{filename} nogui"
+        "java -Xmx1024M -Xms1024M -jar #{filename} nogui >> #{log_filename}"
+    end
+
+    def log_filename
+        "/tmp/minecraft_server.log"
+    end
+
+    def log_text
+        log_contents = ""
+        File.open(log_filename, "r") {|f|
+            log_contents = f.read
+        }
+        log_contents
     end
 
     def set_pid(pid_temp)

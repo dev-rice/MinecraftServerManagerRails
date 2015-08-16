@@ -47,5 +47,43 @@ function show_stop_view() {
     $('#start_view').hide();
 }
 
+function update_log() {
+    $.ajax({
+        type: 'get',
+        url: 'ajax/get_server_log',
+        success: function(response) {
+            set_log_text(response);
+        }
+    });
+}
+
+function set_log_text(log_text) {
+    $('#log_output_div').html(break_log_into_paragraphs(log_text));
+}
+
+function break_log_into_paragraphs(log_text) {
+    lines_arr = log_text.split("\n");
+
+    return turn_line_arr_into_paragraph_arr(lines_arr);
+}
+
+function turn_line_arr_into_paragraph_arr(lines_arr) {
+    lines_arr.forEach(function(line, index, array) {
+        array[index] = line_into_paragraph(line)
+    });
+    return lines_arr;
+}
+
+function line_into_paragraph(line) {
+    if (line == "") {
+        return "";
+    }
+    class_name = "log_paragraph";
+    paragraph_line = "<p class=\"" + class_name + "\">" + line + "</p>";
+    return paragraph_line;
+}
+
 update_status();
 setInterval(update_status, 1000);
+update_log();
+setInterval(update_log, 1000);

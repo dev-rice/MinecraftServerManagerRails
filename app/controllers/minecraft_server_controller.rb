@@ -52,4 +52,8 @@ class MinecraftServerController < ApplicationController
         disconnect_db_connection
     end
 
+    def get_server_log
+        render text: "#{server.log_text}"
+        disconnect_db_connection
+    end
 end
