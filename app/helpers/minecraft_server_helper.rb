@@ -164,13 +164,14 @@ class MinecraftServer
 
     def run_sever_command(filename)
         pid_temp = fork do
-          exec java_command(filename)
+            exec java_command(filename)
         end
+
         set_pid(pid_temp)
     end
 
     def java_command(filename)
-        "java -Xmx1024M -Xms1024M -jar #{filename} nogui >> #{log_filename}"
+        "java -Xmx1024M -Xms1024M -jar #{filename} nogui"
     end
 
     def log_filename
@@ -183,6 +184,12 @@ class MinecraftServer
             log_contents = f.read
         }
         log_contents
+    end
+
+    def delete_log_file
+        if (File.exists?(log_filename))
+            File.delete(log_filename)
+        end
     end
 
     def set_pid(pid_temp)
@@ -199,11 +206,12 @@ class MinecraftServer
         if running
             server_table.delete_entry
             kill_server
+            delete_log_file
         end
     end
 
     def get_server_filename(version)
-        minecraft_server_file="minecraft_server.#{version}.jar"
+        "minecraft_server.#{version}.jar"
     end
 end
 
