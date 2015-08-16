@@ -6,7 +6,7 @@ class MinecraftServerController < ApplicationController
         initialize_db_connection
         @server_table = ServerTable.new(conn, 'server')
         @worlds_table = WorldsTable.new(conn, 'worlds')
-        @server = MinecraftServer.new(server_table)
+        @server = MinecraftServer.new(server_table, worlds_table)
     end
 
     def initialize_db_connection

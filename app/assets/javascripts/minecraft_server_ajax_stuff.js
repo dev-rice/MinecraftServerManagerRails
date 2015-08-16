@@ -85,5 +85,5 @@ function line_into_paragraph(line) {
 
 update_status();
 setInterval(update_status, 1000);
-update_log();
+
 setInterval(update_log, 1000);
