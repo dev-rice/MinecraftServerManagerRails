@@ -7,25 +7,12 @@ class MinecraftWorld
         @version = args[:version]
     end
 
-    def start(server)
+    def prepare()
         enter_world_dir
-        server.start(version, name)
     end
 
     def enter_world_dir
         Dir.chdir(directory)
-    end
-
-    def log_filename
-        File.join(directory, "logs", "latest.log")
-    end
-
-    def log_text
-        log_contents = ""
-        File.open(log_filename, "r") {|f|
-            log_contents = f.read
-        }
-        log_contents
     end
 
 end
@@ -99,7 +86,11 @@ class ServerTable
         entry["pid"].to_i
     end
 
-    def get_world_name
+    def get_world(worlds_table)
+        worlds_table.get_world(world_name)
+    end
+
+    def world_name
         result = dbconn.exec("SELECT world_name FROM #{table_id}")
         entry = result[0]
 
@@ -122,8 +113,8 @@ class ServerTable
         dbconn.exec("CREATE TABLE #{table_id}(pid int, running bool, world_name text);")
     end
 
-    def create_entry(pid, name)
-        dbconn.exec("INSERT INTO #{table_id} (pid, running, world_name) VALUES (#{pid}, true, \'#{name}\');")
+    def create_entry(pid, world)
+        dbconn.exec("INSERT INTO #{table_id} (pid, running, world_name) VALUES (#{pid}, true, \'#{world.name}\');")
     end
 
     def delete_entry
@@ -145,8 +136,29 @@ class ServerTable
 
 end
 
+class Logger
+    attr_reader :world
+
+    def initialize(world)
+        @world = world
+    end
+
+    def filename
+        File.join(world.directory, "logs", "latest.log")
+    end
+
+    def text
+        log_contents = ""
+        File.open(filename, "r") {|f|
+            log_contents = f.read
+        }
+        log_contents
+    end
+
+end
+
 class MinecraftServer
-    attr_reader :pid, :running, :server_table, :worlds_table, :world
+    attr_reader :pid, :running, :server_table, :worlds_table, :logger
 
     def initialize(server_table, worlds_table)
         @server_table = server_table
@@ -164,30 +176,24 @@ class MinecraftServer
 
     def restore
         set_pid(server_table.get_pid)
-        set_world_from_name(server_table.get_world_name)
+        @logger = Logger.new(current_world)
     end
 
-    def set_world_from_name(world_name)
-        set_world(worlds_table.get_world(world_name))
-    end
-
-    def set_world(world)
-        @world = world
+    def current_world()
+        server_table.get_world(worlds_table)
     end
 
     def start_world(world)
-        world.start(self)
-    end
+        world.prepare()
 
-    def start(version, name)
         if !running
-            run_server(version)
-            server_table.create_entry(pid, name)
+            run_server(world.version)
+            server_table.create_entry(pid, world)
         end
     end
 
     def run_server(version)
-        filename = get_server_filename(version)
+        filename = server_filename(version)
         run_sever_command(filename)
     end
 
@@ -205,7 +211,7 @@ class MinecraftServer
 
     def log_text
         if running
-            world.log_text
+            logger.text
         else
             ""
         end
@@ -229,7 +235,7 @@ class MinecraftServer
         end
     end
 
-    def get_server_filename(version)
+    def server_filename(version)
         "minecraft_server.#{version}.jar"
     end
 end
