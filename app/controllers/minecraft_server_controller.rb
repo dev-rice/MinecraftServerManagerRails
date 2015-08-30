@@ -46,6 +46,20 @@ class MinecraftServerController < ApplicationController
         disconnect_db_connection
     end
 
+    def get_server_info_string
+        if !server.running
+            render text: ""
+            disconnect_db_connection
+            return
+        end
+        
+        socket = MinecraftServerSocket.new("yakkio.com", 25565)
+        response = ServerResponse.new(socket.byte_response)
+
+        render text: "#{response.as_string}"
+        disconnect_db_connection
+    end
+
     def get_worlds
         worlds = worlds_table.get_worlds()
         render text: "#{worlds.keys}"

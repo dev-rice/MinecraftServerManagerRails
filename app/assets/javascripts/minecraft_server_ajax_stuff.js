@@ -29,6 +29,20 @@ function update_status() {
     });
 }
 
+function update_info() {
+    $.ajax({
+        type: 'get',
+        url: 'ajax/get_server_info_string',
+        success: function(response) {
+            update_info_text(response);
+        }
+    });
+}
+
+function update_info_text(text) {
+    $('#server_info').html(text)
+}
+
 function update_view(response) {
     if (response == "true"){
         show_stop_view();
@@ -85,5 +99,6 @@ function line_into_paragraph(line) {
 
 update_status();
 setInterval(update_status, 1000);
+setInterval(update_info, 1000);
 
 setInterval(update_log, 1000);

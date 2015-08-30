@@ -1,3 +1,49 @@
+require 'socket'      # Sockets are in standard library
+
+class ServerResponse
+    attr_reader :response_string, :delimiter
+
+    def initialize(raw_data)
+        @delimiter = ','
+        delimiter_byte = [0xA7].pack("C")
+        start_byte = [0xFF].pack("C")
+
+        @response_string = raw_data.split(delimiter_byte).join(delimiter)
+        if response_string[0] == start_byte
+            response_string[0] = ''
+        end
+    end
+
+    def as_string
+        response_string
+    end
+
+    def as_array
+        response_string.split(delimiter)
+    end
+
+    def as_hash
+        response_array = as_array
+        {
+           :message => String.new(response_array[0]),
+           :number_of_players => response_array[1],
+           :max_number_of_players => response_array[2]
+       }
+    end
+end
+
+class MinecraftServerSocket
+    attr_reader :byte_response
+
+    def initialize(hostname, port)
+        socket = TCPSocket.open(hostname, port)
+        byte = [0xFE].pack("C")
+        socket.write(byte)
+        @byte_response = socket.recv(256)
+        socket.close
+    end
+end
+
 class MinecraftWorld
     attr_reader :name, :directory, :version
 

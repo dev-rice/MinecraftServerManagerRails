@@ -6,5 +6,6 @@ Rails.application.routes.draw do
     get 'ajax/get_status' => 'minecraft_server#get_status'
     get 'ajax/get_worlds' => 'minecraft_server#get_worlds'
     get 'ajax/get_server_log' => 'minecraft_server#get_server_log'
+    get 'ajax/get_server_info_string' => 'minecraft_server#get_server_info_string'
 
 end
