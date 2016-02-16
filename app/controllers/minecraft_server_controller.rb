@@ -53,7 +53,7 @@ class MinecraftServerController < ApplicationController
             return
         end
         
-        socket = MinecraftServerSocket.new("yakkio.com", 25565)
+        socket = MinecraftServerSocket.new("192.168.1.112", 25565)
         response = ServerResponse.new(socket.byte_response)
 
         render text: "#{response.as_string}"

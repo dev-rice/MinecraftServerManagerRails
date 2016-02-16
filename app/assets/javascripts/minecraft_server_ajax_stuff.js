@@ -67,12 +67,18 @@ function update_log() {
         url: 'ajax/get_server_log',
         success: function(response) {
             set_log_text(response);
+            autoscroll_div();
         }
     });
 }
 
 function set_log_text(log_text) {
     $('#log_output_div').html(break_log_into_paragraphs(log_text));
+}
+
+function autoscroll_div() {
+    var log_div = $("#log_output_div");    
+    log_div.animate({ scrollTop: log_div.prop("scrollHeight") - log_div.height() }, 500);
 }
 
 function break_log_into_paragraphs(log_text) {
